@@ -13,32 +13,35 @@ ylabel('PM2.5 ug/m^3')
 %%
 sites2014 = unique(LAdata{7}.site);
 
-ind = find(LAdata{7}.site == sites2014(1,1));
+ind = find(LAdata{7}
 
 %%
 
 figure; clf
-scatter(LAdata{7}.serial(ind), LAdata{7}.measurement(ind)) 
+scatter(LAdata{7}.serial, LAdata{7}.measurement) 
 datetick('x',2,'keeplimits')
 ylim([0 150])
 ylabel('PM2.5 ug/m^3')
 
-mm2014site1 = movmean(LAdata{7}.measurement(ind), 24);
 
 figure; clf
-plot(LAdata{7}.serial(ind), mm2014site1, 'Linewidth', 3) 
+plot(LAdata{7}.serial, dailymovmean2014) 
 datetick('x',2,'keeplimits')
 ylim([0 150])
 ylabel('PM2.5 ug/m^3')
 
 figure; clf
+scatter(date, rain);
 hold on 
-plot(LAdata{7}.serial(ind), mm2014site1, 'Linewidth', 1) 
-scatter(date, rain, 'filled')
+for i = 1:7
+    scatter(LAdata{i}.serial, LAdata{i}.measurement, 'k')
+    hold on
+end
 datetick('x',2,'keeplimits')
 ylim([0 150])
 ylabel('PM2.5 ug/m^3 precip')
 datetick('x',2,'keeplimits')
+
 
 
 
