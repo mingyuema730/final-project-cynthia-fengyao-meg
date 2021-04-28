@@ -4,23 +4,22 @@ precip = readtable(filename);
 
 date = datetime(precip.DATE, 'inputformat','yyyyMMdd HH:mm');
 date = datenum(date);
+station = precip.STATION_NAME;
 elevation =precip.ELEVATION;
 lat = precip.LATITUDE;
 lon = precip.LONGITUDE;
-%qpcp = precip.QPCP;
+qpcp = precip.QPCP;
 qgag = precip.QGAG;
 
 precipitation = [date, elevation, lat, lon, qgag];
 precipitation = sortrows(precipitation, 1);
 
-%convert into metric units
-
+%QGAG most likely in tenth of millimeters
 %%
 ind = find(precipitation(:,5) == -9999 | precipitation(:,5)>1000); 
-%remove data with null value or unusable data points???
+%remove data with null value or unusable data points
 
-precipitation(ind,5) = NaN
-
+precipitation(ind,5) = NaN;
 
 %%
 figure (1); clf

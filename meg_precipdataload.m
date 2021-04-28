@@ -1,7 +1,7 @@
 %2008-2013
 filename = '2008_2013_la_county_precip.csv';
 precip = readtable(filename);
-
+%%
 date = datetime(precip.DATE, 'inputformat','yyyyMMdd HH:mm');
 serialdate = datenum(date);
 elevation = precip.ELEVATION;
@@ -91,7 +91,7 @@ figure;
 hold on
 scatter(cleanserialdateqpcp,cleanqpcp)
 
-diff(
+%diff(
 
 
 
