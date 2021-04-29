@@ -20,5 +20,6 @@ hourly_precip(ind) = NaN;
 %%
 
 figure(1); clf
-scatter(date, hourly_precip)
-datetick('x','mm/dd/yy')
+scatter(date(100:200), hourly_precip(100:200))
+datetick('x','mm-dd HH:MM:SS')
+ylim([0 0.1])
