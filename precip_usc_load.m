@@ -12,20 +12,16 @@ data_table(ind_sum, :) = [];
 %% define variables date, hourly_precip
 date = datetime(data_table.DATE,'inputformat','yyyy-MM-dd''T''HH:mm:ss');
 date = datenum(date); %changed date from string to number
-hourly_precip = data_table.HourlyPrecipitation; %inches to hundredths
+hourly_precip = data_table.HourlyPrecipitation .* 2.54; %from inches to cm
 
 ind_zero_precip = hourly_precip == 0;
 hourly_precip(ind_zero_precip) = NaN; %remove zero value
 
 
 %% find start and end time of each percipitation event
-%precip = table(datestr(date), hourly_precip); %table with date in string
-%form and hourly precip data for easier understanding, doesn't have any
-%real value for analysis
-
 ind_precip = find(~isnan(hourly_precip));  % find the index of nonzero percipitation data
 
-precip_event = table(0,0,'VariableNames',{'start_time','end_time'}); 
+precip_event = table(0,0,NaN,NaN,0,0,0,'VariableNames',{'start_time','end_time','start_time_string','end_time_string','duration','total_precip','intensity'}); 
 % generate a table that will store the start and end time of the
 % precipitation event
 
@@ -94,7 +90,7 @@ for i = 1:length(duration)
     end
 end
 
-%% Create time-series scatter grouped by duration type
+%% Create exploratory time-series scatter grouped by duration type
 XTick = [datenum('12-01-2012 12:00') datenum('06-01-2013 12:00') datenum('01-01-2014 12:00')];
 
 figure (1); clf
@@ -124,7 +120,7 @@ for i = 1:length(duration)
     precip_event.total_precip(i) = sum(precip.precip(ind_start_time:ind_end_time));
     
     if duration(i) == 0
-    precip_event.intensity(i) = precip_event.total_precip(i);
+    precip_event.intensity(i) = precip_event.total_precip(i); %intensity in cm/hour
     else
     precip_event.intensity(i) = precip_event.total_precip(i) ./ precip_event.duration(i);
     end
@@ -142,7 +138,10 @@ ind_jan_event = find(precip_event.start_time > datenum('01-01-2013 00:00:00') & 
 
 figure(4); clf
 bar([precip_event.start_time(ind_jan_event) precip_event.end_time(ind_jan_event)], precip_event.total_precip(ind_jan_event),'FaceColor','b','EdgeColor','b','barwidth',20)
-%h1 = axes
 set(gca, 'YDir', 'reverse')
 xlim([datenum('01-01-2013 00:00:00') datenum('02-01-2013 00:00:00')])
 datetick('x','mm-dd')
+xlabel('Date')
+ylabel('Total Precipitation (cm)')
+title('Total Precipitation in Los Angeles in Janurary 2013')
+
