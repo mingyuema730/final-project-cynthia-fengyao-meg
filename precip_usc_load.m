@@ -22,3 +22,4 @@ hourly_precip(ind) = NaN;
 figure(1); clf
 scatter(date, hourly_precip)
 datetick('x','mm/dd/yy')
+

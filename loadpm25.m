@@ -153,9 +153,11 @@ LAdata{7}.measurement = data.measurement(LAdata{7}.index);
 LAdata{7}.site = data.site(LAdata{7}.index);
 
 
-for i = 1:7 
+for i = 1:6 
     LAdata{i}.serial = datenum(LAdata{i}.dategmt) + datenum(LAdata{i}.timegmt) - datenum('00:00','HH:MM'); 
 end 
+
+LAdata{6}.serial = datenum(LAdata{6}.dategmt) + datenum(LAdata{6}.timegmt) - datenum('00:00','HH:MM'); 
 save('LAdata'); 
 
 

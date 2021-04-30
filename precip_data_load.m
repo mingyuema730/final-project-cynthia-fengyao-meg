@@ -2,7 +2,7 @@
 filename = 'newprecipdata.csv';
 precip = readtable(filename);
 
-date = datetime(precip.DATE, 'inputformat','yyyyMMdd');
+date = precip.DATE + years(2000);
 date = datenum(date);
 %station = precip.STATION_NAME;
 elevation =precip.ELEVATION;
@@ -12,7 +12,17 @@ lon = precip.LONGITUDE;
 % qgag = precip.QGAG;
 rain = precip.PRCP; %unit 1/10 mm 
 
-scatter(date, rain);
+%2013 index
+jan2013 = datenum(2013,1,1);
+jan2014 = datenum(2014,1,1);
+index2013 = find( date >= jan2013 & date <= jan2014); 
+rainindex = find(rain == 0);
+rain(rainindex) = NaN;
+
+figure; clf 
+scatter(date, rain, 'filled');
+datetick('x','mmm','keeplimits')
+ylabel('tenth of mm')
 
 % precipitation = [date, elevation, lat, lon, rain];
 % precipitation = sortrows(precipitation, 1);
