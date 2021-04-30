@@ -71,23 +71,23 @@ precip = table(date,hourly_precip, NaN(length(date),1),'VariableNames',{'date','
 
 
 for i = 1:length(duration)
-    if duration(i) < 1 % less than an hour
-        precip_event.duration_type(i) = 1;
+    if duration(i) < 1, % less than an hour
+        precip_event.duration_type = 1;
         ind_start_time = find(precip.date == precip_event.start_time(i));
         ind_end_time = find(precip.date == precip_event.end_time(i));
         precip.duration_type(ind_start_time:ind_end_time) = 1;
-    elseif duration(i) >=1 && duration(i) <2 % between 1-2 hours
-        precip_event.duration_type(i) = 2;
+    elseif duration(i) >=1 & duration(i) <2 % between 1-2 hours
+        precip_event.duration_type = 2;
         ind_start_time = find(precip.date == precip_event.start_time(i));
         ind_end_time = find(precip.date == precip_event.end_time(i));
         precip.duration_type(ind_start_time:ind_end_time) = 2;
-    elseif duration(i) >=2 && duration(i) <3 % between 2-3 hours
-        precip_event.duration_type(i) = 3;
+    elseif duration(i) >=2 & duration(i) <3 % between 2-3 hours
+        precip_event.duration_type = 3;
         ind_start_time = find(precip.date == precip_event.start_time(i));
         ind_end_time = find(precip.date == precip_event.end_time(i));
         precip.duration_type(ind_start_time:ind_end_time) = 3;
     else % greater than 3 hours
-        precip_event.duration_type(i) = 4;
+        precip_event.duration_type = 4;
         ind_start_time = find(precip.date == precip_event.start_time(i));
         ind_end_time = find(precip.date == precip_event.end_time(i));
         precip.duration_type(ind_start_time:ind_end_time) = 4;
@@ -137,12 +137,8 @@ bar([precip_event.start_time precip_event.end_time], precip_event.total_precip,'
 datetick('x','mm-dd')
 
 
-%% all precipitation events (started) in January 2013 in DTLA
-ind_jan_event = find(precip_event.start_time > datenum('01-01-2013 00:00:00') & precip_event.start_time < datenum('02-01-2013 00:00:00'));
-
+%% total precipitation in January 2013 in DTLA
+ind_jan_event = find(precip_event.start_time > datenum('01-01-2013 00
 figure(4); clf
-bar([precip_event.start_time(ind_jan_event) precip_event.end_time(ind_jan_event)], precip_event.total_precip(ind_jan_event),'FaceColor','b','EdgeColor','b','barwidth',20)
-%h1 = axes
-set(gca, 'YDir', 'reverse')
-xlim([datenum('01-01-2013 00:00:00') datenum('02-01-2013 00:00:00')])
+bar([precip_event.start_time precip_event.end_time], precip_event.total_precip,'FaceColor','b','EdgeColor','b')
 datetick('x','mm-dd')
