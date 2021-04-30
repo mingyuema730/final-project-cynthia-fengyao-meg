@@ -56,7 +56,9 @@ ylabel('PM2.5 ug/m^3 precip')
 datetick('x','mmm','keeplimits')
 
 site{4}.changeinpm = diff(site{4}.movemean);
+site{4}.cah
 site{4}.changeinpm(8163,1) = NaN;
+
 
 LAdata{6}.serialround = round(LAdata{6}.serial);
 
@@ -72,7 +74,7 @@ datetick('x','mmm','keeplimits')
 serialunique = unique(LAdata{6}.serialround);
 
 for i = 1:366 
-    n = i*24;
+    find(LAdata{6}.serialround == serialunique(i,1));
     %mean(LAdata{6}.measurement(site{4}.index(n:n+24)))
     
 end

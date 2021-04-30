@@ -56,13 +56,17 @@ ylabel('PM2.5 ug/m^3 precip')
 datetick('x','mmm','keeplimits')
 
 site{4}.changeinpm = diff(site{4}.movemean);
-site{4}.changeinpm(8163,1) = NaN;
+site{4}.changeintime = diff(LAdata{6}.serial(site{4}.index));
+rateofchange = site{4}.changeinpm./site{4}.changeintime;
+rateofchange(8163,1) = NaN;
+
 
 LAdata{6}.serialround = round(LAdata{6}.serial);
 
+%negative rates of change in PM2.5 concentration
 figure; clf
 hold on 
-plot(LAdata{6}.serial(site{4}.index), site{4}.changeinpm, 'LineWidth', 2)
+plot(LAdata{6}.serial(site{4}.index), rateofchange, 'LineWidth', 2)
 scatter(date, rain, 'filled')
 datetick('x',2,'keeplimits')
 % ylim([0 150])
