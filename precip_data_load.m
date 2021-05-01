@@ -1,9 +1,9 @@
-%2008-2013
+%2013
 filename = 'newprecipdata.csv';
 precip = readtable(filename);
 
-date = precip.DATE + years(2000);
-date = datenum(date);
+date1 = precip.DATE + years(2000);
+date1 = datenum(date1);
 %station = precip.STATION_NAME;
 elevation =precip.ELEVATION;
 lat = precip.LATITUDE;
@@ -20,21 +20,7 @@ rainindex = find(rain == 0);
 rain(rainindex) = NaN;
 
 figure; clf 
-scatter(date, rain, 'filled');
+scatter(date1, rain, 'filled');
 datetick('x','mmm','keeplimits')
 ylabel('tenth of mm')
 
-% precipitation = [date, elevation, lat, lon, rain];
-% precipitation = sortrows(precipitation, 1);
-% 
-% %QGAG most likely in tenth of millimeters
-% %%
-% ind = find(precipitation(:,5) == -9999 | precipitation(:,5)>1000); 
-% %remove data with null value or unusable data points
-% 
-% precipitation(ind,5) = NaN;
-% 
-% %%
-% figure (1); clf
-% scatter(precipitation(:,1),precipitation(:,5))
-% datetick('x','yyyy-MM-dd')
