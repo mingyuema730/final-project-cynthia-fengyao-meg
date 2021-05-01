@@ -1,7 +1,7 @@
 load precipitation.mat
 %load LAdata.mat
 
-precip_loc = unique(precipitation(:,2:4), 'rows') %elevation, latitude, longitude of precipitation data site
+precip_loc = unique(precipitation(:,2:4), 'rows'); %elevation, latitude, longitude of precipitation data site
 
 
 %% map of collection sites for precipitation data 
