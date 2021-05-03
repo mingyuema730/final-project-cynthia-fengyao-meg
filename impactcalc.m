@@ -158,6 +158,7 @@ laroc(8569,1) = NaN;
 
 timereformat = datetime(time, 'ConvertFrom', 'datenum');
 
+%rate of change
 figure; clf 
 yyaxis left
 plot(time,laroc);
@@ -190,6 +191,11 @@ scatter(x, minutePM)
 
 
 %%
+%exclude events with duration of 0 
+realind = find(precip_event.duration > 0); 
+
+%%
+
 %calculating change before and after events 
 for i = 1:length(precip_event.start_time)
         ind_start_time = find(x == precip_event.start_time(i));
@@ -219,27 +225,33 @@ end
 %%
 %figures
 
-avchangeduring = mean(meanpmduring-meanpmbefore); 
-changeduring = (meanpmduring-meanpmbefore); 
+avchangeduring = mean(meanpmduring(realind)-meanpmbefore(realind)); 
+changeduring = (meanpmduring(realind)-meanpmbefore(realind)); 
 %before and during
 figure; clf 
-bar([meanpmbefore, meanpmduring])
+bar([meanpmbefore(realind), meanpmduring(realind)])
 hold on 
 legend('6 to 0 hours before', 'During event')
 
-avchangeshort = nanmean(meanpmafter-meanpmbefore); 
-changeshort = (meanpmafter-meanpmbefore); 
+%before and during with index compar
+figure; clf 
+bar([meanpmbefore(realind), meanpmduring(realind)])
+hold on 
+legend('6 to 0 hours before', 'During event')
+
+avchangeshort = nanmean(meanpmafter(realind)-meanpmbefore(realind)); 
+changeshort = (meanpmafter(realind)-meanpmbefore(realind)); 
 %before and after
 figure; clf 
-bar([meanpmbefore, meanpmafter])
+bar([meanpmbefore(realind), meanpmafter(realind)])
 hold on 
 legend('6 to 0 hours before','0 to 2 hours after')
 
-avchangelong = nanmean(meanpmdayafter-meanpmbefore); 
-changelong = (meanpmdayafter-meanpmbefore); 
+avchangelong = nanmean(meanpmdayafter(realind)-meanpmbefore(realind)); 
+changelong = (meanpmdayafter(realind)-meanpmbefore(realind)); 
 %before and 24 hours later bar
 figure; clf 
-bar([meanpmbefore, meanpmdayafter])
+bar([meanpmbefore(realind), meanpmdayafter(realind)])
 hold on 
 legend('6 to 0 hours before','18 to 24 hours after')
 
@@ -247,21 +259,21 @@ legend('6 to 0 hours before','18 to 24 hours after')
 
 %%
 %event #
-event = 1:51;
+event = 1:33;
 %scatter before and long after 
 figure; clf 
-scatter(event,meanpmbefore,'filled')
+scatter(event,meanpmbefore(realind),'filled')
 hold on 
-scatter(event,meanpmdayafter,'filled')
+scatter(event,meanpmdayafter(realind),'filled')
 legend('6 to 0 hours before','18 to 24 hours after')
 ylabel('PM2.5 (\mug/m^3)')
 xlabel('Event #')
 
 %scatter before and short after 
 figure; clf 
-scatter(event,meanpmbefore,'filled')
+scatter(event,meanpmbefore(realind),'filled')
 hold on 
-scatter(event,meanpmafter,'filled')
+scatter(event,meanpmafter(realind),'filled')
 legend('6 to 0 hours before','0 to 2 hours after')
 ylabel('PM2.5 (\mug/m^3)')
 xlabel('Event #')
@@ -280,12 +292,104 @@ ylabel('Change in PM2.5 (\mug/m^3)')
 %statistical significance 
 
 [h,p] = ttest(changeduring)
-%rejects null, p < 0.0001
+%rejects null, p < 0.001
 
 
 [h,p] = ttest(changeshort)
-% does not reject null, p <0.0000001
+% does not reject null, p <0.001
 
 
 [h,p] = ttest(changelong)
-%does not reject null, p = 0.082
+%does not reject null, p = 0.034
+
+%%
+%duration index 
+below1 = find(precip_event.duration_type == 1 & precip_event.duration > 0); 
+ 
+above1 = find(precip_event.duration_type > 1);
+
+%% duration index figures
+%event #
+event = 1:16;
+%scatter before and long after less than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(below1),'filled')
+hold on 
+scatter(event,meanpmdayafter(below1),'filled')
+legend('6 to 0 hours before','18 to 24 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+nanmean(meanpmdayafter(below1)-meanpmbefore(below1))
+
+
+event = 1:length(above1);
+%scatter before and short after greater than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(above1),'filled')
+hold on 
+scatter(event,meanpmdayafter(above1),'filled')
+legend('6 to 0 hours before','18 to 24 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+%% 
+% comparing before and immediately after for different durations 
+event = 1:16;
+%scatter before and short after less than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(below1),'filled')
+hold on 
+scatter(event,meanpmafter(below1),'filled')
+legend('6 to 0 hours before','0 to 2 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+nanmean(meanpmafter(below1)-meanpmbefore(below1))
+
+event = 1:length(above1);
+%scatter before and short after greater than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(above1),'filled')
+hold on 
+scatter(event,meanpmafter(above1),'filled')
+legend('6 to 0 hours before','0 to 2 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+nanmean(meanpmafter(above1)-meanpmbefore(above1))
+
+
+
+%%
+%intensity index 
+
+belowhalf = find(precip_event.intensity <= 0.5 & precip_event.duration > 0); 
+ 
+abovehalf = find(precip_event.intensity > 0.5 & precip_event.duration > 0);
+
+%% intensity figures
+% comparing before and immediately after for different intensities 
+event = 1:19;
+%scatter before and short after less than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(belowhalf),'filled')
+hold on 
+scatter(event,meanpmafter(belowhalf),'filled')
+legend('6 to 0 hours before','0 to 2 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+nanmean(meanpmafter(belowhalf)-meanpmbefore(belowhalf))
+
+event = 1:length(abovehalf);
+%scatter before and short after greater than 1 hour of rain
+figure; clf 
+scatter(event,meanpmbefore(abovehalf),'filled')
+hold on 
+scatter(event,meanpmafter(abovehalf),'filled')
+legend('6 to 0 hours before','0 to 2 hours after')
+ylabel('PM2.5 (\mug/m^3)')
+xlabel('Event #')
+
+nanmean(meanpmafter(above1)-meanpmbefore(above1))
