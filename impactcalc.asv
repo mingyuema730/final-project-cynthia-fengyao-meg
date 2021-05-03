@@ -160,12 +160,12 @@ timereformat = datetime(time, 'ConvertFrom', 'datenum');
 
 figure; clf 
 yyaxis left
-scatter(time,laroc);
-ylabel('Rate of Change ug/m^3
+plot(time,laroc);
+ylabel('Rate of Change (ug m^-3 hr^-^1)')
 hold on 
 yyaxis right 
 bar(precip_event.start_time, precip_event.total_precip,'FaceColor','b','EdgeColor','b','barwidth',20);
-
+ylabel('Precipitation')
 
 
 %% finding PM2.5 values and rate of change for each precip event 
@@ -180,7 +180,6 @@ figure (1); clf
 plot(time, hourly_pm)
 datetick('x', 'mm-dd')
 
-
 hourly_pm = pm_raw.value;
 hourly_pm_smooth = movmean(hourly_pm, 24);
 
@@ -189,8 +188,84 @@ minutePM = interp1(time(1:8560), hourly_pm(1:8560), x);
 figure; clf
 scatter(x, minutePM)
 
+
+%%
+%calculating change before and after events 
 for i = 1:length(precip_event.start_time)
         ind_start_time = find(x == precip_event.start_time(i));
         ind_end_time = find(x == precip_event.end_time(i));
-        precip_event.meanpm = mean(minutePM(ind_start_time:ind_end_time));
+        meanpmduring(i,1) = mean(minutePM(ind_start_time:ind_end_time), 'omitnan');
 end
+
+for i = 1:length(precip_event.start_time)
+        ind_before = find(x == precip_event.start_time(i)-6);
+        ind_start_time = find(x == precip_event.start_time(i));
+        meanpmbefore(i,1) = mean(minutePM(ind_before:ind_start_time), 'omitnan');
+end
+
+for i = 1:length(precip_event.start_time)
+        ind_end_time = find(x == precip_event.end_time(i));
+        ind_end_timelate = find(x == precip_event.end_time(i)+2);
+        meanpmafter(i,1) = mean(minutePM(ind_end_time:ind_end_timelate), 'omitnan');
+end
+
+for i = 1:length(precip_event.start_time)
+        ind_end_time = find(x == precip_event.end_time(i)+18);
+        ind_end_timelate = find(x == precip_event.end_time(i)+24);
+        meanpmdayafter(i,1) = mean(minutePM(ind_end_time:ind_end_timelate), 'omitnan');
+end
+
+
+%%
+%figures
+
+avchangeduring = mean(meanpmduring-meanpmbefore); 
+changeduring = (meanpmduring-meanpmbefore); 
+%before and during
+figure; clf 
+bar([meanpmbefore, meanpmduring])
+hold on 
+legend('6 to 0 hours before', 'During event')
+
+avchangeshort = nanmean(meanpmafter-meanpmbefore); 
+changeshort = (meanpmafter-meanpmbefore); 
+%before and after
+figure; clf 
+bar([meanpmbefore, meanpmafter])
+hold on 
+legend('6 to 0 hours before','0 to 2 hours after')
+
+avchangelong = nanmean(meanpmdayafter-meanpmbefore); 
+changelong = (meanpmdayafter-meanpmbefore); 
+%before and 24 hours later bar
+figure; clf 
+bar([meanpmbefore, meanpmdayafter])
+hold on 
+legend('6 to 0 hours before','18 to 24 hours after')
+
+
+%%
+%event #
+event = 1:51;
+%differences 
+figure; clf 
+scatter(event,meanpmbefore,'filled')
+hold on 
+scatter(event,meanpmdayafter,'filled')
+legend('During-Before', '24hr After-Before')
+ylabel('PM2.5 (\mug/')
+
+
+%%
+%statistical significance 
+
+[h,p] = ttest(changeduring)
+%rejects null, p < 0.0001
+
+
+[h,p] = ttest(changeshort)
+% does not reject null, p <0.0000001
+
+
+[h,p] = ttest(changelong)
+%does not reject null, p = 0.082
