@@ -63,6 +63,8 @@ scatter(cleanserialdateqgag(latindex4qgag),cleanqgag(latindex4qgag))
 scatter(cleanserialdateqgag(latindex5qgag),cleanqgag(latindex5qgag))
 scatter(cleanserialdateqgag(latindex6qgag),cleanqgag(latindex6qgag))
 datetick
+ylabel('Rain (100th of inches)')
+set(gca, 'FontSize', 16)
 
 % change in precip timeseries
 figure;
