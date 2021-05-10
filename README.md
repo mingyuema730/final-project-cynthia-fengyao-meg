@@ -18,7 +18,7 @@ _Code for Analysis_
   * Developed by Mingyue (Cynthia) Ma
   
 * `impactcalc.m` This script was used to conduct t-test on the mean PM2.5 concentration before, during, and after rainfall events and produce figures that compares the change in PM2.5 between precipitation events of different duration and intensity.
-
+The load scripts need to be run before this script. 
   * Developed by Meg Yoder
   
 _Code for Initial Attempt_

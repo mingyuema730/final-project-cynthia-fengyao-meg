@@ -296,6 +296,7 @@ xlabel('Event #')
 
 
 %%
+event = 1:33;
 figure; clf 
 scatter(event, changeshort, 70, 'filled')
 hold on 
@@ -414,3 +415,21 @@ set(gca, 'FontSize', 18)
 ylim([0 30])
 
 nanmean(meanpmafter(abovehalf)-meanpmbefore(abovehalf))
+
+%%
+%intesity scatter plot 
+figure; clf
+scatter(precip_event.intensity(realind), changeshort, 70,'filled')
+xlabel('Rain intensity (cm/hr)')
+ylabel('Change in PM2.5 concentration (\mug/m^3)')
+set(gca, 'FontSize', 18)
+fitlm(precip_event.intensity(realind), changeshort)
+
+%%
+%duration scatter plot 
+figure; clf
+scatter(precip_event.duration(realind), changeshort, 70,'filled')
+xlabel('Duration of event (hours)')
+ylabel('Change in PM2.5 concentration (\mug/m^3)')
+set(gca, 'FontSize', 18)
+fitlm(precip_event.duration(realind), changeshort)
