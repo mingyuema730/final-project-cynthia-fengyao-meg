@@ -1,3 +1,4 @@
+%% not used, for data set not used in final analysis
 %2013
 filename = 'newprecipdata.csv';
 precip = readtable(filename);
